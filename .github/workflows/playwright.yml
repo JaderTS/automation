@@ -1,0 +1,78 @@
+name: Playwright Tests
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  test-ui:
+    name: UI Tests (${{ matrix.browser }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps ${{ matrix.browser }}
+
+      - name: Run UI tests
+        run: npx playwright test tests/e2e --project=${{ matrix.browser }}
+        env:
+          BASE_URL: ${{ secrets.BASE_URL || 'https://www.saucedemo.com' }}
+          STANDARD_USER: ${{ secrets.STANDARD_USER || 'standard_user' }}
+          STANDARD_PASSWORD: ${{ secrets.STANDARD_PASSWORD || 'secret_sauce' }}
+
+      - name: Upload report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report-${{ matrix.browser }}
+          path: playwright-report/
+          retention-days: 14
+
+  test-api:
+    name: API Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright
+        run: npx playwright install --with-deps chromium
+
+      - name: Run API tests
+        run: npx playwright test tests/api --project=api
+        env:
+          API_BASE_URL: ${{ secrets.API_BASE_URL || 'https://reqres.in' }}
+
+      - name: Upload report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report-api
+          path: playwright-report/
+          retention-days: 14

@@ -1,0 +1,20 @@
+{
+  "name": "playwright-showcase",
+  "version": "1.0.0",
+  "description": "Production-ready Playwright test suite: E2E UI and REST API with Page Object Model, custom fixtures, and GitHub Actions CI/CD.",
+  "scripts": {
+    "test": "playwright test",
+    "test:ui": "playwright test tests/e2e",
+    "test:api": "playwright test tests/api --project=api",
+    "test:headed": "playwright test tests/e2e --headed",
+    "test:debug": "playwright test --debug",
+    "report": "playwright show-report",
+    "type-check": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.46.1",
+    "@types/node": "^22.5.2",
+    "dotenv": "^16.4.5",
+    "typescript": "^5.5.4"
+  }
+}
