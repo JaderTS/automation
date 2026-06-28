@@ -33,7 +33,7 @@ jobs:
         run: npx playwright test --project=${{ matrix.browser }}
         env:
           BASE_URL: ${{ secrets.BASE_URL || 'https://www.saucedemo.com' }}
-          API_BASE_URL: ${{ secrets.API_BASE_URL || 'https://reqres.in' }}
+          API_BASE_URL: ${{ secrets.API_BASE_URL || 'https://jsonplaceholder.typicode.com' }}
           STANDARD_USER: ${{ secrets.STANDARD_USER || 'standard_user' }}
           STANDARD_PASSWORD: ${{ secrets.STANDARD_PASSWORD || 'secret_sauce' }}
 
